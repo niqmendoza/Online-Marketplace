@@ -1,0 +1,55 @@
+{% extends "core/base.html" %} <!--extiendo el base.html-->
+
+{% block title %} Items {%endblock%}
+
+{%block content%}
+    <div class="pb-6 grid grid-cols-4 gap-4 bg-gray-100">
+        <div class="col-span-1">
+            <form method="get" action="{% url 'item:items' %}"> <!--como es un metodo get no necesito el csrf token-->
+                <input name="query" class="w-full py-4 px-6 border rounded-xl" type="text" value="{{query}}"  placeholder="Buscar Items">
+                <button class="mt-2 py-4 px-8 text-lg bg-teal-500 text-white rounded-xl">Buscar</button>
+            </form>
+<!--filtrar por categorias-->
+            <hr class="my-6">
+
+            <p class="font-semibold">Categories</p>
+
+            <ul>
+                {% for category in categories %}
+                    <li class="py-2 px-2 rounded-xl {% if category.id == category_id %} bg-gray-200 {%endif%}">
+                        <a href="{% url 'item:items' %}?query={{query}}&category={{category.id}}">{{ category.name }}</a>
+                    </li>
+                {%endfor%}
+            </ul>
+<!--limpiar filtros de categorias-->
+            <hr class="my-6">
+
+            <p class="font-semibold">Limpiar filtros</p>
+
+            <ul>
+                <li>
+                    <a href="{% url 'item:items' %}" class="mt-2 py-4 px-8 inline-block bg-yellow-500 text-lg rounded-xl text-white">Clear</a>
+                </li>
+            </ul>
+
+        </div>
+        <div class="col-span-3">
+            <div class="grid grid-cols-3 gap-3">
+                {%for item in items%} <!--hago que loopee entre los items-->
+                    <div>
+                        <a href="{% url 'item:detail' item.id %}"> <!--aca llamo a la url de item que esta dentro de urls.py de item-->
+                            <div>
+                                <img src="{{item.image.url}}" class="rounded-t-xl"> <!--traigo la imagen del item-->
+                            </div>
+                            <div class="p-6 bg-white rounded-b-xl">
+                                <h2 class="text-2xl">{{item.name}}</h2> <!--traigo el titulo del item-->
+                                <p class="text-gray-500">Precio: {{item.price}}</p> <!--muestro el precio de los items-->
+                            </div>
+                        </a>
+                    </div>
+                {%endfor%}<!--cierro el loop-->
+
+        </div>
+    </div>
+{%endblock%}
+
